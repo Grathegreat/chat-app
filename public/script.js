@@ -1,46 +1,45 @@
 const socket = io();
 
-let username = '';
+let username = null;
 
 function joinChat() {
-    username = document.getElementById('username').value.trim();
-    if (username) {
-        document.getElementById('joinScreen').style.display = 'none';
-        document.getElementById('chatScreen').style.display = 'flex';
-        socket.emit('user joined', username);
+    const input = document.getElementById('usernameInput').value.trim();
+    if (input.length > 0) {
+        socket.emit('new_user', input);
+        username = input;
+        document.getElementById('usernameModal').style.display = 'none';
+        document.getElementById('chat').style.display = 'flex';
     }
 }
 
+socket.on('username_error', (error) => {
+    alert(error);
+});
+
 function sendMessage() {
     const message = document.getElementById('messageInput').value.trim();
-    if (message) {
-        socket.emit('chat message', `${username}: ${message}`);
+    if (message.length > 0) {
+        socket.emit('chat_message', message);
         document.getElementById('messageInput').value = '';
     }
 }
 
-socket.on('chat message', (msg) => {
-    addMessage(msg);
+socket.on('chat_message', (data) => {
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = `${data.username}: ${data.message}`;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
 });
 
-socket.on('user joined', (username) => {
-    addNotification(`${username} joined the chat room.`);
+socket.on('user_connected', (users) => {
+    console.log(users);
 });
 
-function addMessage(msg) {
-    const chatBox = document.getElementById('chatBox');
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.innerText = msg;
-    chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+socket.on('user_disconnected', (users) => {
+    console.log(users);
+});
 
-function addNotification(notification) {
-    const chatBox = document.getElementById('chatBox');
-    const notificationElement = document.createElement('div');
-    notificationElement.classList.add('notification');
-    notificationElement.innerText = notification;
-    chatBox.appendChild(notificationElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('usernameModal').style.display = 'block';
+});
