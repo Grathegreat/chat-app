@@ -19,7 +19,7 @@ socket.on('username_error', (error) => {
 function sendMessage() {
     const message = document.getElementById('messageInput').value.trim();
     if (message.length > 0) {
-        socket.emit('chat_message', message);
+        socket.emit('chat_message', { username: username, message: message });
         document.getElementById('messageInput').value = '';
     }
 }
