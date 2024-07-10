@@ -1,3 +1,4 @@
+// server.js (example)
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -9,18 +10,19 @@ const io = socketIo(server);
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    socket.on('new_user', (username) => {
+        socket.username = username;
+        socket.broadcast.emit('user_connected', username);
+    });
+
+    socket.on('chat_message', (data) => {
+        io.emit('chat_message', data);
+    });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
-
-    socket.on('user joined', (username) => {
-        io.emit('user joined', username);
+        if (socket.username) {
+            socket.broadcast.emit('user_disconnected', socket.username);
+        }
     });
 });
 
