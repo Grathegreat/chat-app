@@ -1,7 +1,7 @@
-// server.js (example)
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const Filter = require('bad-words');
 
 const app = express();
 const server = http.createServer(app);
@@ -10,23 +10,44 @@ const io = socketIo(server);
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
-    socket.on('new_user', (username) => {
+    console.log('A user connected');
+
+    socket.on('join', ({ username, profilePicture }) => {
         socket.username = username;
-        socket.broadcast.emit('user_connected', username);
+        socket.profilePicture = profilePicture;
+        socket.broadcast.emit('notification', `${username} has joined the chat`);
     });
 
-    socket.on('chat_message', (data) => {
-        io.emit('chat_message', data);
+    socket.on('change name', (newUsername) => {
+        const oldUsername = socket.username;
+        socket.username = newUsername;
+        socket.broadcast.emit('notification', `${oldUsername} has changed their name to ${newUsername}`);
+    });
+
+    socket.on('chat message', (msg) => {
+        const filter = new Filter();
+        if (filter.isProfane(msg)) {
+            socket.emit('notification', 'Profanity is not allowed');
+            socket.disconnect(true);
+        } else {
+            io.emit('chat message', { username: socket.username, msg, profilePicture: socket.profilePicture });
+        }
+    });
+
+    socket.on('chat photo', (img) => {
+        io.emit('chat photo', { username: socket.username, img, profilePicture: socket.profilePicture });
+    });
+
+    socket.on('chat voice', (audioURL) => {
+        io.emit('chat voice', { username: socket.username, audioURL, profilePicture: socket.profilePicture });
     });
 
     socket.on('disconnect', () => {
-        if (socket.username) {
-            socket.broadcast.emit('user_disconnected', socket.username);
-        }
+        io.emit('notification', `${socket.username} has left the chat`);
     });
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
