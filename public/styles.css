@@ -1,68 +1,118 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
+    background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
 }
 
-#chat, #usernameModal {
+.centered-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    background-color: #ffffff;
+    background: #fff;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#usernameModal {
-    display: block; /* Set to block initially */
+#chat {
+    width: 90%;
+    max-width: 600px;
 }
 
-#usernameModal input, #chat input[type="text"] {
+#chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.messages-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ced4da;
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
     border-radius: 5px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.message img.profile-picture {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.other-message {
+    background-color: #e0e0e0;
+    color: black;
+    align-self: flex-start;
+}
+
+.notification-message {
+    background-color: #ffeb3b;
+    color: black;
+    text-align: center;
     width: 100%;
 }
 
-#usernameModal button, #chat button {
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: #ffffff;
+.input {
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: calc(100% - 22px);
+}
+
+.btn {
+    padding: 10px;
+    margin-top: 10px;
     border: none;
     border-radius: 5px;
+    background: #007bff;
+    color: #fff;
     cursor: pointer;
 }
 
-#usernameModal button:hover, #chat button:hover {
-    background-color: #218838;
+.btn:hover {
+    background: #0056b3;
 }
 
-#messages {
-    border: 1px solid #ced4da;
+img {
+    max-width: 100%;
+    height: auto;
     border-radius: 5px;
-    padding: 10px;
-    width: 300px;
-    height: 200px;
-    overflow-y: scroll;
-    margin-bottom: 10px;
-    background-color: #e9ecef;
 }
 
-#messages div {
-    margin: 5px 0;
+audio {
+    max-width: 100%;
 }
 
-#messages div:nth-child(odd) {
-    background-color: #f1f3f5;
-    padding: 5px;
-    border-radius: 5px;
+#profile-picture-input,
+.hidden {
+    display: none;
+}
+
+#chat-inputs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
